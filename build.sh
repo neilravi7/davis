@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # exit on error
-# test one 
+
 set -o errexit
 
 poetry install
