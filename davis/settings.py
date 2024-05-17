@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-b0=rf@vqz&i52#^=ly(prm=ttsnzs72!&6#af%_4!b%orqx7qa
 DEBUG = True
 
 # https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = [ 'aded-2401-4900-36ac-33bb-80fb-d53-da3f-39e6.ngrok-free.app', 'localhost:8000', 'localhost:3000',  'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [ 'davis-1.onrender.com', 'localhost:8000', 'localhost:3000',  'localhost', '127.0.0.1']
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
