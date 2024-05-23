@@ -50,9 +50,23 @@ MAPBOX_KEY = os.environ.get('MAPBOX_KEY')
 
 # Application definition
 
-PROJECT_APPS = []
+PROJECT_APPS = [
+    'accounts.apps.AccountsConfig',
+    'vendor.apps.VendorConfig',
+    'customer.apps.CustomerConfig',
+    'location.apps.LocationConfig',
+    'menu.apps.MenuConfig',
+    'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
+    'checkout.apps.CheckoutConfig',
+]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'taggit',   
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -94,7 +108,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'davis.wsgi.application'
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -213,8 +227,8 @@ SIMPLE_JWT = {
         'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-        'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
-        'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(hours=1),
+        'SLIDING_TOKEN_LIFETIME': datetime.timedelta(days=1),
+        'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=2),
 }
 
 
