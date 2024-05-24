@@ -25,13 +25,12 @@ ENY_TYPE = os.environ.get('ENV_TYPE')
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b0=rf@vqz&i52#^=ly(prm=ttsnzs72!&6#af%_4!b%orqx7qa'
-# SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = 'RENDER' not in os.environ
-DEBUG = True
+DEBUG = False
 
 # https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [ 'davis-1.onrender.com', 'localhost:8000', 'localhost:3000',  'localhost', '127.0.0.1']
