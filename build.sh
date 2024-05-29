@@ -5,5 +5,8 @@ set -o errexit
 
 poetry install
 
-python manage.py collectstatic --no-input
+# Set environment variable to disable collectstatic
+# python manage.py collectstatic --no-input
+export DISABLE_COLLECTSTATIC=1
+
 python manage.py migrate
