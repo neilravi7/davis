@@ -25,7 +25,10 @@ urlpatterns = [
     path('auth/', include('accounts.urls')),
     path('customer/', include('customer.urls')),
     path('vendor/', include('vendor.urls')),
-    
+    path('menu/', include('menu.urls')),
+    path('cart/', include('cart.urls')),
+    path('checkout/', include('checkout.urls')),
+    path('order/', include("orders.urls"))
 ]
 
 handler404 = views.error_four_zero_four
