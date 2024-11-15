@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from helper.models import BaseModel
 
 from django.core.exceptions import ValidationError
@@ -18,7 +19,7 @@ class Vendor(BaseModel, models.Model):
     name = models.CharField(max_length=120, blank=True, null=True)
     description = models.TextField(max_length=250, blank=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
-    cuisine_type = models.CharField(max_length=255, blank=True, null=True)
+    cuisine_type = ArrayField(models.CharField(max_length=255, blank=True, null=True))
     is_approved = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 
@@ -26,7 +27,7 @@ class Vendor(BaseModel, models.Model):
         db_table = "vendors"
 
     def __str__(self):
-        return self.name.capitalize()
+        return self.name
     
     def __unicode__(self):
         return self.id

@@ -243,6 +243,20 @@ asgiref = ">=3.6"
 Django = ">=3.2"
 
 [[package]]
+name = "django-extensions"
+version = "3.2.3"
+description = "Extensions for Django"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-extensions-3.2.3.tar.gz", hash = "sha256:44d27919d04e23b3f40231c4ab7af4e61ce832ef46d610cc650d53e68328410a"},
+    {file = "django_extensions-3.2.3-py3-none-any.whl", hash = "sha256:9600b7562f79a92cbf1fde6403c04fee314608fefbb595502e34383ae8203401"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-taggit"
 version = "4.0.0"
 description = "django-taggit is a reusable Django application for simple tagging."
@@ -597,4 +611,4 @@ brotli = ["Brotli"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "2adcd0e0a2ca1366c2d7de9572d2fccbdf0d4b12ea75fae6108b9e40a87aa9d6"
+content-hash = "95c424d0a07dc20eed308a5e233e3752b3c046b255a5844645c72ba7ac2dfe14"

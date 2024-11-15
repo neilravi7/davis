@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserM
 from helper.models import BaseModel
 from django.utils.translation import gettext_lazy as gl
 from location.models import Address
+from cart.models import Cart, CartItem
 
 # Create your models here.
 class UserProfileManager(BaseUserManager):
@@ -58,22 +59,28 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     def __unicode__(self):
         return self.id
     
-    # def get_cart(self):
-    #     cart, created = Cart.objects.get_or_create(customer=self)
-    #     return cart
+    def get_user_full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
     
-    # def get_cart_item(self):
-    #     cart = self.get_cart()
-    #     cart_items = CartItem.objects.filter(cart=cart)
-    #     return cart_items
+    def get_cart(self):
+        cart, created = Cart.objects.get_or_create(customer=self)
+        return cart
+    
+    def get_cart_item(self):
+        cart = self.get_cart()
+        cart_items = CartItem.objects.filter(cart=cart)
+        return cart_items
     
     def get_user_phone(self):
+        phone = None
         if self.is_customer:
             phone = self.user_as_customer.phone
-            return phone
         if self.is_vendor:
             phone = self.user_as_vendor.phone
+        if phone is not None:
             return phone
+        else:
+            return ""
     
     def get_user_address(self):
         address = Address.objects.filter(user_id=self.id).first()
@@ -81,3 +88,11 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
             return address.address
         else:
             return ""
+    
+    def get_user_profile_image(self):
+        if self.is_customer:
+            image_url = self.user_as_customer.image_url
+            return image_url
+        if self.is_vendor:
+            image_url = self.user_as_vendor.image_url
+            return image_url

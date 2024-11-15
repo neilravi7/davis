@@ -36,7 +36,7 @@ class CheckoutAPIView(APIView):
         
         vendor=None
         total_amount=0      
-        DELIVERY_CAHRGES=10
+        DELIVERY_CHARGES=10
         TAX_PERCENTAGE=8
 
         # create orders items 
@@ -51,7 +51,7 @@ class CheckoutAPIView(APIView):
             vendor=item.food_item.vendor
         
         tax = (total_amount*TAX_PERCENTAGE)/100
-        total_amount = total_amount+tax+DELIVERY_CAHRGES
+        total_amount = total_amount+tax+DELIVERY_CHARGES
         order_instance.vendor=vendor
         order_instance.total_amount=total_amount
         order_instance.save()
@@ -80,7 +80,7 @@ class CheckoutAPIView(APIView):
 
             # adding extra items as product.
             # We can add tax and shipping ids into stripe but its done for now.
-            # Tax an Restaurent Charges
+            # Tax an Restaurant Charges
             line_items.append(
                 {
                     "price_data": {
@@ -119,8 +119,8 @@ class CheckoutAPIView(APIView):
                 payment_method_types=["card"],
                 line_items=line_items,
                 mode="payment",
-                success_url=f"http://localhost:3000/app/payment/success?order_id={display_id}",
-                cancel_url=f"http://localhost:3000/app/payment/success?order_id={display_id}"
+                success_url=f"http://localhost:3000/payment/success?order_id={display_id}",
+                cancel_url=f"http://localhost:3000/payment/success?order_id={display_id}"
             )
             order.stripe_checkout_id=checkout_session.id
             order.save()

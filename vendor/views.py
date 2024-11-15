@@ -10,7 +10,7 @@ from location.models import Address
 class VendorListAPIView(APIView):
     permission_classes = (IsAuthenticated, )
     def get(self, request):
-        vendors = Vendor.objects.all()
+        vendors = Vendor.objects.filter(is_active=True)
         serializer = VendorSerializer(vendors, many=True)
         return Response(serializer.data)
 

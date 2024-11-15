@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = 'RENDER' not in os.environ
-DEBUG = False
+DEBUG = True
 
 # https://docs.djangoproject.com/en/3.0/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [ 'davis-1.onrender.com', 'localhost:8000', 'localhost:3000',  'localhost', '127.0.0.1']
@@ -64,7 +64,8 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'taggit',   
+    'taggit',
+    'django_extensions',   
 ]
 
 INSTALLED_APPS = [

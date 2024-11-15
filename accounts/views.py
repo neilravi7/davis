@@ -65,7 +65,6 @@ class ChangePasswordView(generics.UpdateAPIView):
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
     def post(self, request):
-        print("Logout View Called")
         try:
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)

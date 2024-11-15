@@ -59,7 +59,7 @@ class FoodItemListView(APIView):
     
 
 class FoodItemAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, *args, **kwargs):
         food_item = get_object_or_404(FoodItem, pk=pk)
@@ -96,7 +96,7 @@ class FoodItemCreateView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = FoodItemSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(vendor=request.user, category_id=request.data.get('category_id'))
+            serializer.save(vendor=request.user, category_id=request.data.get('category'))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

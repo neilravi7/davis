@@ -13,6 +13,7 @@ class CartCreateView(APIView):
         cart, created = Cart.objects.get_or_create(customer=request.user)
 
         if cart:
+            CART_VALUE_TOTAL = 0
             cart_items = [
                 {
                     "id":item.food_item.id,
@@ -22,7 +23,8 @@ class CartCreateView(APIView):
                     "price":item.food_item.price,
                     "quantity":item.quantity
                 }
-                    for item in CartItem.objects.filter(cart=cart)
+                
+                for item in CartItem.objects.filter(cart=cart)
             ]
         else:
             cart_items = []

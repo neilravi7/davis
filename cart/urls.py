@@ -5,5 +5,5 @@ app_name = 'cart'
 
 urlpatterns = [
     # Cart API's
-    path('api/items', views.CartCreateView().as_view(), name='cart'),
+    path('items', views.CartCreateView().as_view(), name='cart'),
 ]

@@ -46,17 +46,26 @@ class LoginSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         user_data = UserSerializer(user).data
         for key, value in user_data.items():
-            if key != 'id':
+            if key != 'id' and key != 'first_name' and key != "last_name" and key != "is_vendor" and key != "is_customer":
                 token[key] = value
         
         return token
     
     def validate(self, attrs):
         data = super().validate(attrs)
-
-        # Add your extra responses here
-        data['username'] = self.user.username
-        data['groups'] = self.user.groups.values_list('name', flat=True)
+        data["userInfo"] = {
+            "id":self.user.id,
+            "name":self.user.get_full_name(),
+            "email":self.user.email,
+            "address":self.user.get_user_address(),
+            "phone":self.user.get_user_phone(),
+            "profileImage":self.user.get_user_profile_image()
+        }
+        
+        if self.user.is_customer:
+            data["userInfo"]["cartItems"] = self.user.get_cart_item()
+        
+        data["success"] = True
         return data
 
 User = get_user_model()

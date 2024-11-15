@@ -22,13 +22,13 @@ from . import views
 urlpatterns = [
     path('', views.home_page, name="home"),
     path('admin/', admin.site.urls),
-    path('auth/', include('accounts.urls')),
-    path('customer/', include('customer.urls')),
-    path('vendor/', include('vendor.urls')),
-    path('menu/', include('menu.urls')),
-    path('cart/', include('cart.urls')),
-    path('checkout/', include('checkout.urls')),
-    path('order/', include("orders.urls"))
+    path('api/v1/', include('accounts.urls')),
+    path('api/v1/customer/', include('customer.urls')),
+    path('api/v1/vendor/', include('vendor.urls')),
+    path('api/v1/menu/', include('menu.urls')),
+    path('api/v1/cart/', include('cart.urls')),
+    path('api/v1/checkout/', include('checkout.urls')),
+    path('api/v1/orders/', include("orders.urls"))
 ]
 
 handler404 = views.error_four_zero_four

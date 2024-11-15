@@ -7,10 +7,10 @@ app_name = 'accounts'
 
 urlpatterns = [
     # AUTH URLS:
-    path('api/register', views.SignUpView.as_view(), name='register'),
-    path('api/login', views.LoginView.as_view(), name='login'),
-    path('api/logout', views.LogoutView.as_view(), name='logout'),
-    path('api/login/refresh', TokenRefreshView.as_view(), name='login_refresh'),
+    path('sign-up', views.SignUpView.as_view(), name='register'),
+    path('login', views.LoginView.as_view(), name='login'),
+    path('logout', views.LogoutView.as_view(), name='logout'),
+    path('login/refresh', TokenRefreshView.as_view(), name='login_refresh'),
 
     # # USER URLS:
     # # User List
