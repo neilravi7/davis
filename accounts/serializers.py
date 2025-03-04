@@ -46,7 +46,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         user_data = UserSerializer(user).data
         for key, value in user_data.items():
-            if key != 'id' and key != 'first_name' and key != "last_name" and key != "is_vendor" and key != "is_customer":
+            if key != 'id' and key != 'first_name' and key != "last_name":
                 token[key] = value
         
         return token
@@ -59,7 +59,11 @@ class LoginSerializer(TokenObtainPairSerializer):
             "email":self.user.email,
             "address":self.user.get_user_address(),
             "phone":self.user.get_user_phone(),
-            "profileImage":self.user.get_user_profile_image()
+            "profileImage":self.user.get_user_profile_image(),
+            "role":{
+                "isCustomer":self.user.is_customer,
+                "isVendor":self.user.is_vendor
+            }
         }
         
         if self.user.is_customer:

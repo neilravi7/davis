@@ -11,6 +11,7 @@ urlpatterns = [
     path('login', views.LoginView.as_view(), name='login'),
     path('logout', views.LogoutView.as_view(), name='logout'),
     path('login/refresh', TokenRefreshView.as_view(), name='login_refresh'),
+    path("upload-imgbb/", views.ImageUploadAPIView.as_view(), name="image-upload"),
 
     # # USER URLS:
     # # User List

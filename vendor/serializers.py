@@ -6,12 +6,13 @@ class VendorSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
 
     class Meta:
         model = Vendor
         fields = (
-            'first_name', 'last_name', 'image_url', 'name', 'phone', 'cuisine_type',
+            'first_name', 'last_name', 'email', 'image_url', 'name', 'phone', 'cuisine_type',
             'description', 'id', 'user', 'is_active', 'address', 
         )
         read_only_fields = ('id', 'email', 'is_approved', 'is_active')
@@ -22,8 +23,13 @@ class VendorSerializer(serializers.ModelSerializer):
     def get_last_name(self, obj):
         return obj.user.last_name if obj.user else ""
     
+    def get_email(self, obj):
+        return obj.user.email if obj.user else ""
+    
     def get_address(self, obj):
         return obj.user.get_user_address() if obj.user else ""
+    
+
     
 
 class OpeningHoursSerializer(serializers.ModelSerializer):

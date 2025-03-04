@@ -6,4 +6,5 @@ urlpatterns = [
     path('list', views.VendorListAPIView().as_view(), name='vendor_list_api'),
     path('<uuid:user_id>/profile', views.VendorAPIView().as_view(), name='vendor_api'),
     path('opening/hours', views.TimingAPIView().as_view(), name='vendor_timing'),
+    path('<uuid:user_id>/details', views.VendorProfileView().as_view(), name='vendor_details'),
 ]

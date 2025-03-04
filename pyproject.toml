@@ -19,6 +19,7 @@ geocoder = "^1.38.1"
 stripe = "^6.7.0"
 djangorestframework-simplejwt = "^5.3.0"
 django-extensions = "^3.2.3"
+b2sdk = "^2.6.0"
 
 
 [build-system]

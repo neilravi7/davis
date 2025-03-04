@@ -19,9 +19,9 @@ class Vendor(BaseModel, models.Model):
     name = models.CharField(max_length=120, blank=True, null=True)
     description = models.TextField(max_length=250, blank=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
-    cuisine_type = ArrayField(models.CharField(max_length=255, blank=True, null=True))
+    cuisine_type = ArrayField(models.CharField(max_length=255), blank=True, null=True)
     is_approved = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False, null=True, blank=True)
 
     class Meta:
         db_table = "vendors"
@@ -33,7 +33,7 @@ class Vendor(BaseModel, models.Model):
         return self.id
     
     def save(self, *args, **kwargs):
-        self.image_url = "https://delishnow.s3.us-east-005.backblazeb2.com/hero-1.jpg" # amazon bucket will take place here.
+        # self.image_url = "https://delishnow.s3.us-east-005.backblazeb2.com/hero-1.jpg" # amazon bucket will take place here.
         return super(Vendor, self).save(*args, **kwargs)
     
 

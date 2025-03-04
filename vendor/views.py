@@ -6,6 +6,8 @@ from .serializers import VendorSerializer, OpeningHoursSerializer
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated #IsAuthenticatedOrReadOnly,
 from location.models import Address
+from django.contrib.auth import get_user_model
+
 
 class VendorListAPIView(APIView):
     permission_classes = (IsAuthenticated, )
@@ -15,7 +17,7 @@ class VendorListAPIView(APIView):
         return Response(serializer.data)
 
 class VendorAPIView(APIView):
-    # permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, )
     def get_object(self, user_id):
         try:
             return Vendor.objects.get(user__id=user_id)
@@ -34,8 +36,13 @@ class VendorAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
 
+            print(request.data)
+
             # Saving user.first_name and last_name.
             # This thing can be done with signal will be implemented
+            vendor.is_active = request.data.get('is_active')
+            vendor.image_url = request.data.get('image_url') 
+            vendor.save()
             user = vendor.user
             user.first_name = request.data.get('first_name')
             user.last_name = request.data.get('last_name')
@@ -51,7 +58,7 @@ class VendorAPIView(APIView):
     def delete(self, request, user_id):
         vendor = self.get_object(user_id)
         vendor.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)        
 
 
 class TimingAPIView(APIView):
@@ -60,4 +67,35 @@ class TimingAPIView(APIView):
         timing = OpeningHours.objects.filter(restaurant__id=request.user.user_as_vendor.id)
         serializer = OpeningHoursSerializer(timing, many=True)
         return Response(serializer.data)
+    
+
+class VendorProfileView(APIView):
+    def get_object(self, user_id):
+        try:
+            return Vendor.objects.get(user__id=user_id)
+        except Vendor.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, user_id):
+        User = get_user_model()
+        user = User.objects.get(id=user_id)
+        vendor = self.get_object(user_id)
+
+        vendor_name = vendor.name if vendor.name else ""
+        image_url = vendor.image_url if vendor.image_url else ""
+        cuisine_type = vendor.cuisine_type if vendor.cuisine_type else ""
+
+        vendorData = {
+            "name": vendor_name,
+            "image": image_url,
+            "ownerName": f"{user.first_name} {user.last_name}",
+            "email": user.email,
+            "address": user.get_user_address(),
+            "openTime": "11:00 AM",
+            "closeTime": "10:00 PM",
+            "cuisineType":cuisine_type,
+            "isAcceptingDeliveries": vendor.is_active,
+        }
+
+        return Response(vendorData, status=status.HTTP_200_OK)
     
