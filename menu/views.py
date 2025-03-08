@@ -4,6 +4,8 @@ from rest_framework import status
 from .models import Category, FoodItem
 from .serializers import CategorySerializer, FoodItemSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
+
 
 # Permission
 from rest_framework.permissions import IsAuthenticated #IsAuthenticatedOrReadOnly,
@@ -53,7 +55,19 @@ class FoodItemListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        food_items = FoodItem.objects.filter(vendor_id=request.user.id, is_available=True)
+        available = request.query_params.get("available")
+        if available is not None:
+            if available.lower() == "true":
+                available = True
+            elif available.lower() == "false":
+                available = False
+            else:
+                raise ValidationError({"available": "Invalid value. Must be 'true' or 'false'."})
+            
+            food_items = []
+            food_items = FoodItem.objects.filter(vendor_id=request.user.id, is_available=available)
+        else:
+            food_items = FoodItem.objects.filter(vendor_id=request.user.id)
         serializer = FoodItemSerializer(food_items, many=True)
         return Response(serializer.data)
     

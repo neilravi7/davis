@@ -22,6 +22,8 @@ class Vendor(BaseModel, models.Model):
     cuisine_type = ArrayField(models.CharField(max_length=255), blank=True, null=True)
     is_approved = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False, null=True, blank=True)
+    discount = models.IntegerField(default=0, null=True, blank=True)
+    rating = models.IntegerField(default=1, null=True, blank=True)  
 
     class Meta:
         db_table = "vendors"

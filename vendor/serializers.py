@@ -13,7 +13,7 @@ class VendorSerializer(serializers.ModelSerializer):
         model = Vendor
         fields = (
             'first_name', 'last_name', 'email', 'image_url', 'name', 'phone', 'cuisine_type',
-            'description', 'id', 'user', 'is_active', 'address', 
+            'description', 'id', 'user', 'is_active', 'address', 'rating', 'discount', 
         )
         read_only_fields = ('id', 'email', 'is_approved', 'is_active')
 

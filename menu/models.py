@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.conf import settings
 from helper.models import BaseModel
+import random as r
 
 # Create your models here.
 class Category(BaseModel, models.Model):
@@ -36,7 +37,7 @@ class FoodItem(BaseModel, models.Model):
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     description = models.TextField(max_length=250, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image_url = models.URLField(blank=True, null=True)
+    image = models.URLField(blank=True, null=True)
     is_available = models.BooleanField(default=True)
 
     class Meta:
@@ -49,6 +50,6 @@ class FoodItem(BaseModel, models.Model):
         self.name = self.name.capitalize()
     
     def save(self, *args, **kwargs) -> None:
-        self.slug = slugify(self.name)
+        self.slug = f'{slugify(self.name)}-{r.randint(0,9999)}'
         # self.image_url = "https://delishnow.s3.us-east-005.backblazeb2.com/hero-1.jpg"
         return super(FoodItem, self).save(*args, **kwargs)
