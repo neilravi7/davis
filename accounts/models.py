@@ -68,8 +68,7 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
     
     def get_cart_item(self):
         cart = self.get_cart()
-        cart_items = CartItem.objects.filter(cart=cart)
-        return cart_items
+        return CartItem.objects.filter(cart=cart)
     
     def get_user_phone(self):
         phone = None
@@ -88,6 +87,13 @@ class User(BaseModel, AbstractUser, PermissionsMixin):
             return address.address
         else:
             return ""
+        
+    def get_coordinates(self):
+        address = Address.objects.filter(user_id=self.id).first()
+        if address:
+            return [address.lat, address.long]
+        else:
+            return [0, 0]
     
     def get_user_profile_image(self):
         if self.is_customer:

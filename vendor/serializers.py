@@ -7,13 +7,15 @@ class VendorSerializer(serializers.ModelSerializer):
     last_name = serializers.SerializerMethodField()
     address = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
+    lat = serializers.SerializerMethodField()
+    long = serializers.SerializerMethodField()
 
 
     class Meta:
         model = Vendor
         fields = (
             'first_name', 'last_name', 'email', 'image_url', 'name', 'phone', 'cuisine_type',
-            'description', 'id', 'user', 'is_active', 'address', 'rating', 'discount', 
+            'description', 'id', 'user', 'is_active', 'address', 'rating', 'discount', "lat", "long",
         )
         read_only_fields = ('id', 'email', 'is_approved', 'is_active')
 
@@ -28,7 +30,12 @@ class VendorSerializer(serializers.ModelSerializer):
     
     def get_address(self, obj):
         return obj.user.get_user_address() if obj.user else ""
+
+    def get_lat(self, obj):
+        return obj.user.get_coordinates()[0] if obj.user else ""
     
+    def get_long(self, obj):
+        return obj.user.get_coordinates()[1] if obj.user else ""
 
     
 

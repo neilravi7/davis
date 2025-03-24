@@ -36,8 +36,8 @@ class CheckoutAPIView(APIView):
         
         vendor=None
         total_amount=0      
-        DELIVERY_CHARGES=10
-        TAX_PERCENTAGE=8
+        DELIVERY_CHARGES=5
+        TAX_PERCENTAGE=4
 
         # create orders items 
         for item in cart_items:
@@ -69,7 +69,7 @@ class CheckoutAPIView(APIView):
                         "currency": "usd",
                         "product_data": {
                             "name": item.food_item.name,
-                            "images":[item.food_item.image_url],
+                            "images":[item.food_item.image],
                         },
                         "unit_amount": int(item.food_item.price),
                     },
@@ -89,7 +89,7 @@ class CheckoutAPIView(APIView):
                             "name": "Tax and Restaurants Fee",
                             "images":["https://cdn-icons-png.flaticon.com/128/3257/3257473.png"],
                         },
-                        "unit_amount":1000,
+                        "unit_amount":500,
                     },
                     "quantity": 1,
                 }
@@ -104,7 +104,7 @@ class CheckoutAPIView(APIView):
                             "name": "Delivery Charges",
                             "images":["https://cdn-icons-png.flaticon.com/128/3063/3063822.png"],
                         },
-                        "unit_amount":800,
+                        "unit_amount":3500,
                     },
                     "quantity": 1,
                 }
@@ -119,21 +119,22 @@ class CheckoutAPIView(APIView):
                 payment_method_types=["card"],
                 line_items=line_items,
                 mode="payment",
-                success_url=f"http://localhost:3000/payment/success?order_id={display_id}",
-                cancel_url=f"http://localhost:3000/payment/success?order_id={display_id}"
+                success_url=f"http://localhost:5173/customer/order/status?order_id={display_id}",
+                cancel_url=f"http://localhost:5173/customer/order/status?order_id={display_id}"
             )
             order.stripe_checkout_id=checkout_session.id
             order.save()
             # Clear Cart
             cart_items.delete()  
-            return Response({"checkout_url":checkout_session.url, "session_id":checkout_session.id}, status=status.HTTP_200_OK)
+            return Response({"checkout_url":checkout_session.url, "session_id":checkout_session.id, "orderId":order.id, "display_id":display_id}, status=status.HTTP_200_OK)
 
 class CheckOutStatus(APIView):
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_API_KEY_HIDDEN
         order_id = request.data.get('order_id')
         order = Order.objects.filter(display_id=order_id).first()
-        order_items = order.get_order_items()       
+        order_items = order.get_order_items()
+               
         try:
             checkout_session = stripe.checkout.Session.retrieve(order.stripe_checkout_id)
             checkout_session_data = json.loads(checkout_session.last_response.body)
@@ -149,16 +150,34 @@ class CheckOutStatus(APIView):
             else:
                success=True
 
-            order={
-                "customer_detail":checkout_session_data.get('customer_details'),
-                "order_status":order.status
+            # order={
+            #     "id":order.id,
+            #     "display_id":order.display_id,
+            #     "line_items":order.get_serialize_items(),
+            #     "order_total":order.get_order_total(),
+            #     "customer_detail":checkout_session_data.get('customer_details'),
+            #     "order_status":order.status
+            # }
+            order = {
+                "id": order.display_id,
+                "customer":order.customer.id,
+                "vendor":order.vendor.id,
+                "items":order.get_serialize_items(),
+                "total": order.get_order_total().get('sub_total')/100,
+                "restaurant": order.get_restaurant_name(),
+                "deliveryAddress": checkout_session_data.get('customer_details').get('address').get("line1"),
+                "estimatedDelivery": "pending",
+                "order_success":success,
+                "payment_status":checkout_session_data.get('payment_status'),
+                "firebase_order_id":order.firebase_order_id,
             }
+
+
 
             return Response(
                 {
                     "success":success, 
                     "order":order, 
-                    "payment_status":checkout_session_data.get('payment_status')
                 }, 
                 status=status.HTTP_200_OK
             )

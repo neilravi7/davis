@@ -26,8 +26,7 @@ class VendorAPIView(APIView):
 
     def get(self, request, user_id):
         vendor = self.get_object(user_id)
-        serializer = VendorSerializer(vendor)
-        
+        serializer = VendorSerializer(vendor)    
         return Response(serializer.data)
 
     def put(self, request, user_id):
@@ -91,6 +90,8 @@ class VendorProfileView(APIView):
             "ownerName": f"{user.first_name} {user.last_name}",
             "email": user.email,
             "address": user.get_user_address(),
+            "lat":user.get_coordinates()[0],
+            "long":user.get_coordinates()[1],
             "openTime": "11:00 AM",
             "closeTime": "10:00 PM",
             "cuisineType":cuisine_type,

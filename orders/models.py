@@ -35,9 +35,13 @@ class Order(BaseModel, models.Model):
     display_id = models.CharField(max_length=10)
     stripe_checkout_id = models.CharField(max_length=80, null=True, blank=True)
     payment_status=models.CharField(max_length=80, null=True, blank=True)
+    firebase_order_id=models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         db_table = 'orders'
+
+    def get_restaurant_name(self):
+        return self.vendor.user_as_vendor.name
 
     def get_order_items(self):
         return OrderItem.objects.filter(order_id=self.id)
@@ -51,11 +55,36 @@ class Order(BaseModel, models.Model):
             {
                 "id":item.id, 
                 "name":item.food_item.name, 
-                "image_url":item.food_item.image_url,
+                "image":item.food_item.image,
+                "price":(item.food_item.price)/100,
                 "quantity":item.quantity
             } 
                 for item in items
             ]
+    
+    def get_order_total(self):
+        sub_total = 0
+        TAX_PERCENTAGE=4
+        DELIVERY = 5
+
+        for item in self.get_order_items():
+            sub_total += item.food_item.price * item.quantity
+        
+        tax = (sub_total*TAX_PERCENTAGE)/100
+        TOTAL  = sub_total+tax+DELIVERY 
+
+        return {
+            "sub_total": TOTAL, 
+            "breakdown":{
+                "sub_total":sub_total,
+                "tax_charges":tax,
+                "delivery_charges":DELIVERY,
+                "display_total":TOTAL/100
+            }
+        }
+    
+    def get_firebase_order_id(self):
+        return self.firebase_order_id
     
 
 class OrderItem(BaseModel, models.Model):

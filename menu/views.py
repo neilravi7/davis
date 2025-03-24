@@ -120,7 +120,6 @@ class FoodItemCustomerAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, *args, **kwargs):
-        print("Food Item List: ", pk)
         food_items = FoodItem.objects.filter(vendor_id=pk, is_available=True)
         serializer = FoodItemSerializer(food_items, many=True)
         return Response(serializer.data)

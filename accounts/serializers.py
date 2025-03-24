@@ -58,6 +58,8 @@ class LoginSerializer(TokenObtainPairSerializer):
             "name":self.user.get_full_name(),
             "email":self.user.email,
             "address":self.user.get_user_address(),
+            "lat":self.user.get_coordinates()[0],
+            "long":self.user.get_coordinates()[1],
             "phone":self.user.get_user_phone(),
             "profileImage":self.user.get_user_profile_image(),
             "role":{
@@ -66,8 +68,8 @@ class LoginSerializer(TokenObtainPairSerializer):
             }
         }
         
-        if self.user.is_customer:
-            data["userInfo"]["cartItems"] = self.user.get_cart_item()
+        # if self.user.is_customer:
+        #     data["userInfo"]["cartItems"] = self.user.get_cart_item()
         
         data["success"] = True
         return data

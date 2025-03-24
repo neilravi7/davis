@@ -16,12 +16,16 @@ class CartCreateView(APIView):
             CART_VALUE_TOTAL = 0
             cart_items = [
                 {
-                    "id":item.food_item.id,
-                    "cart_id":item.id,
+                    "food_item_id":item.food_item.id,
+                    "cart_id":cart.id,
+                    "cart_item_id":item.id,
                     "name":item.food_item.name, 
-                    "image_url":item.food_item.image_url, 
+                    "image":item.food_item.image, 
                     "price":item.food_item.price,
-                    "quantity":item.quantity
+                    "quantity":item.quantity,
+                    "vendor":item.food_item.vendor.id,
+                    "customer":request.user.id,
+                    "restaurant":item.food_item.vendor.user_as_vendor.name,
                 }
                 
                 for item in CartItem.objects.filter(cart=cart)
@@ -37,8 +41,6 @@ class CartCreateView(APIView):
         # Create a cart item serializer instance with request data
         serializer = CartItemSerializer(data=request.data)
         if serializer.is_valid():
-            # Check if the cart item already exists for this food item
-            print(serializer.validated_data['food_item'])
             # remember: we are checking with FoodItem id not cart id. 
             existing_item = CartItem.objects.filter(food_item_id=serializer.validated_data['food_item']).first()
             
@@ -50,10 +52,48 @@ class CartCreateView(APIView):
                 # Create a new cart item and associate it with the user's cart
                 cart_item = serializer.save(cart=cart)
             
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            cart_id = request.user.get_cart().id
+            cart = CartItem.objects.filter(cart_id=cart_id)
+            cart_items_data = [
+                {
+                    'food_item_id':item.food_item.id,
+                    'cart_item_id': item.id,
+                    'cart_id':cart_id,
+                    "name":item.food_item.name, 
+                    'image':item.food_item.image, 
+                    'price':item.food_item.price,
+                    'quantity': item.quantity,
+                    "vendor":item.food_item.vendor.id,
+                    "customer":request.user.id,
+                    "restaurant":item.food_item.vendor.user_as_vendor.name,
+                } 
+                for item in cart
+            ]   
+            return Response(cart_items_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    # def delete(self, request, *args, **kwargs):
-    #     category = get_object_or_404(CartItem)
-    #     category.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CartItemRemoveView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def delete(self, request, pk, *args, **kwargs):
+        CartItem.objects.filter(id=pk).delete()
+
+        cart_id = request.user.get_cart().id
+        cart = CartItem.objects.filter(cart_id=cart_id)
+        cart_items_data = [
+            {
+                'food_item_id':item.food_item.id,
+                'cart_item_id': item.id,
+                'cart_id':cart_id,
+                "name":item.food_item.name, 
+                'image':item.food_item.image, 
+                'price':item.food_item.price,
+                'quantity': item.quantity,
+                "vendor":item.food_item.vendor.id,
+                "customer":request.user.id,
+                "restaurant":item.food_item.vendor.user_as_vendor.name,
+            }
+            for item in cart
+        ]
+        return Response(cart_items_data, status=status.HTTP_200_OK)

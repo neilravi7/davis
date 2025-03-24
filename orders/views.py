@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Order, OrderItem
+from .serializers import OrderSerializer
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -44,10 +46,16 @@ class OrderListAPIView(APIView):
             return Response({"orders":user_orders}, status=status.HTTP_200_OK)
         else:
             return Response({"orders":[]}, status=status.HTTP_200_OK)
-    
-        
         
 
+class OrderUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
 
-
+    def patch(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, pk=pk)
+        serializer = OrderSerializer(order, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
